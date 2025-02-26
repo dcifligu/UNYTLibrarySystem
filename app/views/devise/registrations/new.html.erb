@@ -1,0 +1,62 @@
+<div class="h-screen w-screen flex">
+  <div class="w-full h-full">
+    <div class="flex justify-center items-center h-full w-full">
+      <div class="w-full m-5 bg-[#ccdedf] rounded-xl shadow-lg">
+        <div class="w-full h-full m-5">
+          <h1 class="text-3xl font-semibold mb-6 text-black">Sign Up</h1>
+          <div class="mx-2">
+            <div class="w-full h-full flex flex-col">
+              <%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
+                <%= render "devise/shared/error_messages", resource: resource %>
+                <div class="w-full h-full grid gap-2 grid-cols-3">
+                  <div>
+                    <%= f.label :name, class: "block text-sm font-medium text-gray-700" %>
+                    <%= f.text_field :name,:required => true, class: "mt-1 p-2 w-5/6 border rounded-md focus:outline-none transition-colors duration-300" %>
+                  </div>
+                  <div>
+                    <%= f.label :surname, class: "block text-sm font-medium text-gray-700" %>
+                    <%= f.text_field :surname, :required => true, class: "mt-1 p-2 w-5/6 border rounded-md focus:outline-none transition-colors duration-300" %>
+                  </div>
+                  <div>
+                    <%= f.label :contact_address, class: "block text-sm font-medium text-gray-700" %>
+                    <%= f.text_field :contact_address, class: "mt-1 p-2 w-5/6 border rounded-md focus:outline-none transition-colors duration-300" %>
+                  </div>
+                  <div>
+                    <%= f.label :email, class: "block text-sm font-medium text-gray-700" %>
+                    <%= f.email_field :email, :required => true, class: "mt-1 p-2 w-5/6 border rounded-md focus:outline-none transition-colors duration-300" %>
+                  </div>
+                  <div>
+                    <%= f.label :password, class: "block text-sm font-medium text-gray-700" %>
+                    <%= f.password_field :password, :required => true, class: "mt-1 p-2 w-5/6 border rounded-md focus:outline-none transition-colors duration-300" %>
+                  </div>
+                  <div class="field">
+                    <%= f.label :password_confirmation, class: "block text-sm font-medium text-gray-700" %>
+                    <%= f.password_field :password_confirmation, :required => true, class: "mt-1 p-2 w-5/6 border rounded-md focus:outline-none transition-colors duration-300" %>
+                  </div>
+                </div>
+                <div class="w-full flex justify-center items-center cursor-pointer group">
+                  <div>
+                    <%= f.submit "Sign Up", class: "w-full bg-black text-white p-2 rounded-md hover:bg-gray-800 focus:bg-black focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900 transition-colors duration-300" %>
+                  </div>
+                </div>
+                <div class="mt-4 text-sm text-gray-600 text-center flex flex-col">
+                  <!--
+                  <p>Already have an account?
+                    <%# <%= link_to "Login here", login_path, class: "text-black hover:underline" %> %>
+                  </p>
+                  <p>Return to 
+                    <a href="/" class="text-black hover:underline">HomePage</a>
+                  </p>
+                  -->
+                </div>
+              <% end %>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>  
+  </div> 
+  <div class="w-3/5 h-full">
+    <%# <%= image_tag "SignUp.png", alt: "Library Logo", class: "h-full w-full object-cover"%>
+  </div>
+</div>
