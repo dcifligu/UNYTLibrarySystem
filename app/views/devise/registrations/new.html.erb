@@ -34,20 +34,18 @@
                     <%= f.password_field :password_confirmation, :required => true, class: "mt-1 p-2 w-5/6 border rounded-md focus:outline-none transition-colors duration-300" %>
                   </div>
                 </div>
-                <div class="w-full flex justify-center items-center cursor-pointer group">
+                <div class="w-full flex justify-center items-center cursor-pointer group mt-2">
                   <div>
                     <%= f.submit "Sign Up", class: "w-full bg-black text-white p-2 rounded-md hover:bg-gray-800 focus:bg-black focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900 transition-colors duration-300" %>
                   </div>
                 </div>
                 <div class="mt-4 text-sm text-gray-600 text-center flex flex-col">
-                  <!--
                   <p>Already have an account?
-                    <%# <%= link_to "Login here", login_path, class: "text-black hover:underline" %> %>
+                    <%= link_to "Login here", new_user_session_path, class: "text-black hover:underline" %>
                   </p>
                   <p>Return to 
                     <a href="/" class="text-black hover:underline">HomePage</a>
                   </p>
-                  -->
                 </div>
               <% end %>
             </div>
@@ -57,6 +55,6 @@
     </div>  
   </div> 
   <div class="w-3/5 h-full">
-    <%# <%= image_tag "SignUp.png", alt: "Library Logo", class: "h-full w-full object-cover"%>
+    <%= image_tag "SignUp.png", alt: "Library Logo", class: "h-full w-full object-cover"%>
   </div>
 </div>
