@@ -3,6 +3,6 @@ class User < ApplicationRecord
          :recoverable, :rememberable, :validatable
 
   def admin?
-    user_type == 0  # Assuming 0 is for admins and 1 is for regular users
+    user_type == 1  # Assuming 1 is for admins and 0 is for regular users
   end
 end
