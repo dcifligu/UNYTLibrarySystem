@@ -43,6 +43,6 @@ class DeviseCreateUsers < ActiveRecord::Migration[8.0]
     add_column :users, :name, :string, null: false
     add_column :users, :surname, :string, null: false
     add_column :users, :contact_address, :string, null: true
-    add_column :users, :user_type, :integer, null: false, default: 0
+    add_column :users, :user_type, :integer, null: false, default: 1
   end
 end

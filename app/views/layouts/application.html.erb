@@ -24,10 +24,36 @@
   </head>
 
   <body>
-    <div>
-      <p class="notice"><%= notice %></p>
-      <p class="alert"><%= alert %></p>
-    </div>
-      <%= yield %>
-  </body>
+  <div id="flash-messages" class="fixed top-5 right-5 space-y-2 z-50">
+    <% flash.each do |type, message| %>
+      <% flash_class = type == "notice" ? "bg-green-500" : "bg-red-500" %>
+      <div class="flash-message <%= flash_class %> text-white px-4 py-3 rounded-lg shadow-lg flex justify-between items-center transition-opacity duration-500 opacity-100">
+        <span><%= message %></span>
+        <button class="close-btn ml-4 text-lg font-bold">&times;</button>
+      </div>
+    <% end %>
+  </div>
+
+  <%= yield %>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const messages = document.querySelectorAll(".flash-message");
+
+      messages.forEach(msg => {
+        // Auto-hide after 3 seconds
+        setTimeout(() => {
+          msg.classList.add("opacity-0");
+          setTimeout(() => msg.remove(), 500);
+        }, 3000);
+
+        // Manual close button
+        msg.querySelector(".close-btn").addEventListener("click", () => {
+          msg.classList.add("opacity-0");
+          setTimeout(() => msg.remove(), 500);
+        });
+      });
+    });
+  </script>
+</body>
 </html>
