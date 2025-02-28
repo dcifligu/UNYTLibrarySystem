@@ -24,36 +24,111 @@
   </head>
 
   <body>
-  <div id="flash-messages" class="fixed top-5 right-5 space-y-2 z-50">
-    <% flash.each do |type, message| %>
-      <% flash_class = type == "notice" ? "bg-green-500" : "bg-red-500" %>
-      <div class="flash-message <%= flash_class %> text-white px-4 py-3 rounded-lg shadow-lg flex justify-between items-center transition-opacity duration-500 opacity-100">
-        <span><%= message %></span>
-        <button class="close-btn ml-4 text-lg font-bold">&times;</button>
+    <nav id="navbar" class="fixed z-20 w-full h-20 transition-transform duration-300 <%= 'hidden' if hide_nav? %>">
+      <div class="mx-6 my-2">
+        <div class="w-full h-16 bg-white rounded-full">
+          <div class="mx-10 h-full">
+            <div class="flex items-center justify-between w-full h-full">
+              <div>
+                <a href="/" class="text-black font-bold text-lg ml-4">Library System</a>
+              </div>
+              <div class="w-fit grid grid-cols-3 gap-3">
+                <span class="text-black hover:underline cursor-pointer">Books</span>
+                <span class="text-black hover:underline cursor-pointer">Journals</span>
+                <span class="text-black hover:underline cursor-pointer">About us</span>
+              </div>
+              <div class="w-fit flex gap-2">
+                <% if user_signed_in? %>
+                  <%= button_to "Logout", destroy_user_session_path, method: :delete, class: "" %>
+                <% else %>
+                  <%= link_to "Login", new_user_session_path, class: "text-black hover:underline" %>
+                  <%= link_to "Signup", new_user_registration_path, class: "text-black hover:underline" %>
+                <% end %>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
-    <% end %>
-  </div>
+    </nav>
+    <div id="flash-messages" class="fixed top-5 right-5 space-y-2 z-50">
+      <% flash.each do |type, message| %>
+        <% flash_class = type == "notice" ? "bg-green-500" : "bg-red-500" %>
+        <div id="flash-message" class=" <%= flash_class %> text-white px-4 py-3 rounded-lg shadow-lg flex justify-between items-center transition-opacity duration-500 opacity-0 animate-fade-in">
+          <span><%= message %></span>
+          <span onclick="close_alert()" class="cursor-pointer ml-4 text-lg font-bold">&times;</span>
+        </div>
+      <% end %>
+    </div>
 
-  <%= yield %>
+    <%= yield %>
 
-  <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      const messages = document.querySelectorAll(".flash-message");
+    <script>
 
-      messages.forEach(msg => {
-        // Auto-hide after 3 seconds
-        setTimeout(() => {
-          msg.classList.add("opacity-0");
-          setTimeout(() => msg.remove(), 500);
-        }, 3000);
+      // Hide navbar on scroll down
+      let lastScrollTop = 0;
+      const navbar = document.getElementById('navbar');
+      const scrollThreshold = 50; 
+      
+      function handleScroll() {
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        
+        if (scrollTop > lastScrollTop && scrollTop > scrollThreshold) {
+          navbar.style.transform = 'translateY(-100%)';
+        } 
+        else if (scrollTop < lastScrollTop) {
+          navbar.style.transform = 'translateY(0)';
+        }
+        
+        lastScrollTop = scrollTop;
+      }
+      
+      window.addEventListener('scroll', handleScroll);
 
-        // Manual close button
-        msg.querySelector(".close-btn").addEventListener("click", () => {
-          msg.classList.add("opacity-0");
-          setTimeout(() => msg.remove(), 500);
+      //Flash messages fade out
+      function fadeOutFlashMessages() {
+        const flashMessages = document.querySelectorAll('.flash-message');
+        flashMessages.forEach(message => {
+          setTimeout(() => {
+            message.classList.remove('animate-fade-in');
+            message.classList.add('animate-fade-out');
+          }, 3000);
+
+          message.addEventListener('animationend', () => {
+            if (message.classList.contains('animate-fade-out')) {
+              message.remove();
+            }
+          });
         });
-      });
-    });
-  </script>
-</body>
+      }
+
+      function close_alert() {
+        const flashMessage = document.getElementById("flash-message");
+        flashMessage.classList.remove('animate-fade-in');
+        flashMessage.classList.add('animate-fade-out');
+      }
+
+      //Loader
+      document.addEventListener('DOMContentLoaded', fadeOutFlashMessages);
+    </script>
+
+    <style>
+      @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+      }
+
+      @keyframes fadeOut {
+        from { opacity: 1; }
+        to { opacity: 0; }
+      }
+
+      .animate-fade-in {
+        animation: fadeIn 0.5s ease-in-out forwards;
+      }
+
+      .animate-fade-out {
+        animation: fadeOut 0.5s ease-in-out forwards;
+      }
+    </style>
+  </body>
 </html>
