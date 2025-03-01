@@ -24,22 +24,22 @@
   </head>
 
   <body>
-    <nav id="navbar" class="fixed z-20 w-full h-20 transition-transform duration-300 <%= 'hidden' if hide_nav? %>">
+    <nav id="navbar" class="fixed z-20 w-full h-20 transition-transform duration-300  <%= 'hidden' if hide_nav? %>">
       <div class="mx-6 my-2">
-        <div class="w-full h-16 bg-white rounded-full">
+        <div class="w-full h-16 bg-white rounded-full border-2 shadow-md">
           <div class="mx-10 h-full">
             <div class="flex items-center justify-between w-full h-full">
               <div>
                 <a href="/" class="text-black font-bold text-lg ml-4">Library System</a>
               </div>
               <div class="w-fit grid grid-cols-3 gap-3">
-                <span class="text-black hover:underline cursor-pointer">Books</span>
-                <span class="text-black hover:underline cursor-pointer">Journals</span>
-                <span class="text-black hover:underline cursor-pointer">About us</span>
+                <%= link_to "Books", show_books_path, class: "text-black hover:underline" %>
+                <%= link_to "Journals", show_journals_path, class: "text-black hover:underline" %>
+                <%= link_to "About us", about_us_path, class: "text-black hover:underline" %>
               </div>
               <div class="w-fit flex gap-2">
                 <% if user_signed_in? %>
-                  <%= button_to "Logout", destroy_user_session_path, method: :delete, class: "" %>
+                  <%= button_to "Logout", destroy_user_session_path, method: :delete, class: "cursor-pointer" %>
                 <% else %>
                   <%= link_to "Login", new_user_session_path, class: "text-black hover:underline" %>
                   <%= link_to "Signup", new_user_registration_path, class: "text-black hover:underline" %>

@@ -1,0 +1,27 @@
+<div class="pt-40 w-screen h-screen">
+  <div class="w-full h-full">
+    <div class="mx-6">
+      <div class="w-full h-fit grid grid-cols-5 justify-items-center gap-3">
+        <% @books.each do |book| %>
+          <div class="w-4/5 h-fit py-12 px-2 bg-black rounded-lg">
+            <div class="flex flex-col justify-center items-center h-fit w-full bg-white rounded-md p-3">
+              <div class="flex justify-center items-center h-48 w-full bg-black rounded-md">
+                <%= image_tag "book.png", alt: "Book Logo", class: "h-full w-full object-cover" %>
+              </div>
+              <div class="flex flex-col gap-2 items-center justify-center">
+                <h1 class="text-xl font-medium"><%= book.title %></h1>
+                <span class="text-sm text-stone-400 font-normal">
+                  <%= book.description.truncate(100) %>
+                </span>
+                <div class="flex flex-row w-full gap-1">
+                  <%= link_to "Details", details_book_path(book), class: "w-1/2 flex justify-center bg-amber-50 py-1 px-4 rounded-md" %>
+                  <%= link_to "Reserve", "#", class: "w-1/2 flex justify-center bg-amber-50 py-1 px-4 rounded-md" %>
+                </div>
+              </div>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

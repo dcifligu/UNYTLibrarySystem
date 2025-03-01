@@ -4,6 +4,9 @@ class PagesController < ApplicationController
   def index
   end
 
+  def about_us
+  end
+
   def dashboard
     if current_user.admin?
       redirect_to admin_dashboard_path
