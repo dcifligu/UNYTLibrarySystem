@@ -4,16 +4,23 @@ Rails.application.routes.draw do
   get "books/create"
   get "books/show"
   devise_for :users
-  resources :books, only: [ :show, :create ] do
+  resources :books, only: [:show, :create] do
     member do
       get :details
+      get :reserve # Add this route
     end
+    resources :reservations, only: [:new, :create]
   end
-  resources :journals, only: [ :show, :create ] do
+  
+  resources :journals, only: [:show, :create] do
     member do
       get :details
+      get :reserve # Add this route
     end
+    resources :reservations, only: [:new, :create]
   end
+  
+  resources :reservations, only: [:index, :show]
   authenticated :user do
     root "pages#dashboard", as: :authenticated_root
   end
@@ -21,6 +28,11 @@ Rails.application.routes.draw do
   unauthenticated do
     root "pages#index", as: :unauthenticated_root
   end
+
+  namespace :admin do
+    resources :reservations, only: [:index, :update]
+  end
+  
 
   get "/dashboard", to: "pages#dashboard", as: "dashboard"
   get "/admin_dashboard", to: "pages#admin_dashboard", as: "admin_dashboard"
