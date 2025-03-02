@@ -3,24 +3,22 @@
     <div class="mx-6">
       <div class="w-full h-fit grid grid-cols-5 justify-items-center gap-3">
         <% @journals.each do |journal| %>
-          <div class="w-4/5 h-fit py-12 px-2 bg-black rounded-lg">
-            <div class="flex flex-col justify-center items-center h-fit w-full bg-white rounded-md p-3">
-              <div class="flex justify-center items-center h-48 w-full bg-black rounded-md">
-                <%= image_tag "book.png", alt: "Book Logo", class: "h-full w-full object-cover" %>
-              </div>
-              <div class="flex flex-col gap-2 items-center justify-center">
-                <h1 class="text-xl font-medium"><%= journal.title %></h1>
-                <span class="text-sm text-stone-400 font-normal">
+          <div class="w-4/5 h-fit py-12 px-2">
+            <div class="relative block rounded-tr-3xl rounded-b-md border bg-gray-100 border-gray-200">
+              <%= image_tag "book.png", alt: "journal Logo", class: "-ml-6 -mt-6 h-80 w-full rounded-bl-3xl rounded-tr-3xl border border-gray-300 object-fit shadow-md" %>
+              <div class="p-4 text-center">
+                <strong class="text-xl font-medium text-gray-900"><%= journal.title %></strong>
+                <p class="mt-2 text-pretty text-gray-500">
                   <%= journal.description.truncate(100) %>
-                </span>
-                <div class="flex flex-row items-center justify-center w-full gap-1">
-                  <%= link_to "Details", details_journal_path(journal), class: "w-1/2 flex justify-center bg-amber-50 py-1 px-4 rounded-md" %>
-                  <% if user_signed_in? %>
+                </p>
+                <div class="flex flex-row w-full gap-1">
+                  <%= link_to "Details", details_journal_path(journal), class: "w-1/2 flex justify-center bg-amber-50 py-1 px-4 rounded-md my-4 hover:text-white hover:bg-amber-300 transition-all duration-300 hover:duration-300" %>
+                   <% if user_signed_in? %>
                     <% unless current_user.admin? %>
-                      <%= link_to "Reserve", reserve_book_path(book), class: "w-1/2 flex justify-center bg-amber-50 py-1 px-4 rounded-md" %>
-                    <% end %>
+                      <%= link_to "Reserve", reserve_journal_path(journal), class: "w-1/2 flex justify-center bg-amber-50 py-1 px-4 rounded-md my-4 hover:text-white hover:bg-amber-300 transition-all duration-300 hover:duration-300" %>
+                    <% end %> 
                   <% else %>
-                    <span onclick=call_popup() class= "w-1/2 flex justify-center bg-amber-50 py-1 px-4 rounded-md cursor-pointer">Reserve</span>
+                    <span onclick=call_popup() class= "w-1/2 flex justify-center bg-amber-50 py-1 px-4 rounded-md cursor-pointer hover:text-white my-4 hover:bg-amber-300 transition-all duration-300 hover:duration-300">Reserve</span>
                   <% end %>
                 </div>
               </div>
@@ -32,9 +30,11 @@
   </div>
 </div>
 
-
 <div id="authModal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center">
-  <div class="bg-white p-6 rounded-lg">
+  <div class="bg-white py-6 px-12 rounded-lg">
+    <div class="relative ml-4 w-full">
+        <span onclick=close_popup() class="absolute top-1 right-1 text-gray-400 cursor-pointer">&times;</span>
+    </div>
     <h2 class="text-xl mb-4">Only users with an account can make reservations</h2>
     <p class="mb-4">Continue to login or signup</p>
     <div class="flex justify-end">
