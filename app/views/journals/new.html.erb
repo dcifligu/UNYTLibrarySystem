@@ -1,0 +1,45 @@
+<div class="bg-gray-50 min-h-screen">
+  <div class="max-w-6xl mx-auto px-4 py-12 sm:px-6 lg:px-8">
+    <div class="text-center">
+      <h1 class="text-4xl font-extrabold text-gray-900 sm:text-5xl sm:tracking-tight lg:text-6xl">Add a New Journal</h1>
+      <p class="mt-5 max-w-xl mx-auto text-xl text-gray-500">Fill out the form below to add a new journal to the library.</p>
+    </div>
+
+    <div class="mt-12">
+      <div class="bg-white rounded-xl shadow-md overflow-hidden">
+        <div class="p-8">
+          <%= form_with model: @journal, url: journals_path, class: "space-y-6" do |form| %>
+            <div>
+              <%= form.label :title, "Title", class: "block text-sm font-medium text-gray-700" %>
+              <%= form.text_field :title, class: "mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500", placeholder: "Enter journal title" %>
+            </div>
+
+            <div>
+              <%= form.label :publisher, "Publisher", class: "block text-sm font-medium text-gray-700" %>
+              <%= form.text_field :publisher, class: "mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500", placeholder: "Enter publisher name" %>
+            </div>
+
+            <div>
+              <%= form.label :issue, "ISSN", class: "block text-sm font-medium text-gray-700" %>
+              <%= form.text_field :issue, class: "mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500", placeholder: "Enter ISSN" %>
+            </div>
+
+            <div>
+              <%= form.label :publish_year, "Publication Year", class: "block text-sm font-medium text-gray-700" %>
+              <%= form.number_field :publish_year, class: "mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500", placeholder: "Enter publication year" %>
+            </div>
+
+            <div>
+              <%= form.label :description, "Description", class: "block text-sm font-medium text-gray-700" %>
+              <%= form.text_area :description, rows: 4, class: "mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500", placeholder: "Enter journal description" %>
+            </div>
+
+            <div class="mt-6">
+              <%= form.submit "Add Journal", class: "inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" %>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

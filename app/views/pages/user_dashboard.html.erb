@@ -1,4 +1,63 @@
-<h1>User Dashboard</h1>
-<p>Welcome, <%= current_user.name %>!</p>
+<div class="bg-gray-50 min-h-screen">
+  <div class="max-w-6xl mx-auto px-4 py-12 sm:px-6 lg:px-8">
+    <div class="text-center">
+      <h1 class="text-4xl font-extrabold text-gray-900 sm:text-5xl sm:tracking-tight lg:text-6xl">User Dashboard</h1>
+      <p class="mt-5 max-w-xl mx-auto text-xl text-gray-500">Welcome back, <%= current_user.full_name %>!</p>
+    </div>
 
-<%= button_to "Logout", destroy_user_session_path, method: :delete %>
+    <div class="mt-12">
+      <h2 class="text-2xl font-bold text-gray-900">Active Reservations</h2>
+      <div class="mt-4 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+        <% @reservations.each do |reservation| %>
+          <div class="bg-white rounded-xl shadow-md overflow-hidden">
+            <div class="p-8">
+              <h3 class="text-xl font-bold text-gray-900"><%= reservation.reservable.title %></h3>
+              <p class="mt-2 text-gray-500"><%= reservation.reservable_type %></p>
+              <p class="mt-2 text-sm text-gray-500">Status: <%= reservation.status %></p>
+              <div class="mt-4">
+                <%= link_to "View", reservation_path(reservation), class: "inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" %>
+              </div>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+
+    <div class="mt-12">
+      <h2 class="text-2xl font-bold text-gray-900">Active Loans</h2>
+      <div class="mt-4 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+        <% @active_loans.each do |loan| %>
+          <div class="bg-white rounded-xl shadow-md overflow-hidden">
+            <div class="p-8">
+              <h3 class="text-xl font-bold text-gray-900"><%= loan.loanable.title %></h3>
+              <p class="mt-2 text-gray-500"><%= loan.loanable_type %></p>
+              <p class="mt-2 text-sm text-gray-500">Due Date: <%= loan.end_date.strftime('%d %b %Y') %></p>
+              <p class="mt-2 text-sm text-gray-500">Status: <%= loan.status %></p>
+              <div class="mt-4">
+                <%= link_to "View", admin_loan_path(loan), class: "inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" %>
+              </div>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+
+    <div class="mt-12">
+      <h2 class="text-2xl font-bold text-gray-900">Pending Fines</h2>
+      <div class="mt-4 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+        <% @pending_fines.each do |fine| %>
+          <div class="bg-white rounded-xl shadow-md overflow-hidden">
+            <div class="p-8">
+              <h3 class="text-xl font-bold text-gray-900">Fine for Loan #<%= fine.loan.id %></h3>
+              <p class="mt-2 text-gray-500">Amount: <%= fine.amount %> Lek</p>
+              <p class="mt-2 text-sm text-gray-500">Status: <%= fine.status %></p>
+              <div class="mt-4">
+                <%= link_to "Pay Now", "#", class: "inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500" %>
+              </div>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

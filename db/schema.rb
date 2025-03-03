@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_03_02_221822) do
+ActiveRecord::Schema[8.0].define(version: 2025_03_03_190610) do
   create_table "books", force: :cascade do |t|
     t.string "title"
     t.string "author"
@@ -20,6 +20,18 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_02_221822) do
     t.text "description"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "fines", force: :cascade do |t|
+    t.integer "loan_id", null: false
+    t.integer "user_id", null: false
+    t.decimal "amount", precision: 8, scale: 2, null: false
+    t.integer "status", default: 0
+    t.text "notes"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["loan_id"], name: "index_fines_on_loan_id"
+    t.index ["user_id"], name: "index_fines_on_user_id"
   end
 
   create_table "journals", force: :cascade do |t|
@@ -32,6 +44,20 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_02_221822) do
     t.text "description"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "loans", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.string "loanable_type", null: false
+    t.integer "loanable_id", null: false
+    t.date "start_date", null: false
+    t.date "end_date", null: false
+    t.integer "status", default: 0
+    t.text "notes"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["loanable_type", "loanable_id"], name: "index_loans_on_loanable"
+    t.index ["user_id"], name: "index_loans_on_user_id"
   end
 
   create_table "reservations", force: :cascade do |t|
@@ -63,5 +89,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_02_221822) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  add_foreign_key "fines", "loans"
+  add_foreign_key "fines", "users"
+  add_foreign_key "loans", "users"
   add_foreign_key "reservations", "users"
 end

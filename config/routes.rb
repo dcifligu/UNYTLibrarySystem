@@ -1,26 +1,38 @@
+# config/routes.rb (update)
 Rails.application.routes.draw do
   get "journals/show"
   get "journals/create"
   get "books/create"
   get "books/show"
   devise_for :users
-  resources :books, only: [:show, :create] do
+  
+  # Search routes
+  get '/search', to: 'search#index', as: 'search'
+  get '/search/users', to: 'search#users', as: 'search_users'
+  
+  # Profile routes
+  get '/profile', to: 'profiles#show', as: 'profile'
+  get '/profile/edit', to: 'profiles#edit', as: 'edit_profile'
+  patch '/profile', to: 'profiles#update'
+  
+  resources :books, only: [:index, :show, :create, :new] do
     member do
       get :details
-      get :reserve # Add this route
+      get :reserve
     end
     resources :reservations, only: [:new, :create]
   end
-  
-  resources :journals, only: [:show, :create] do
+
+  resources :journals, only: [:index, :show, :create, :new] do
     member do
       get :details
-      get :reserve # Add this route
+      get :reserve
     end
     resources :reservations, only: [:new, :create]
   end
-  
-  resources :reservations, only: [:index, :show]
+
+  resources :reservations, only: [:index, :show, :destroy]
+
   authenticated :user do
     root "pages#dashboard", as: :authenticated_root
   end
@@ -30,9 +42,21 @@ Rails.application.routes.draw do
   end
 
   namespace :admin do
-    resources :reservations, only: [:index, :update]
+    resources :reservations, only: [:index, :update, :destroy] do
+      member do
+        patch :approve
+        patch :reject
+      end
+    end
+    
+    resources :loans, only: [:index, :new, :create, :show] do
+      member do
+        patch :close
+      end
+    end
+    
+    resources :fines, only: [:index, :new, :create, :update, :destroy]
   end
-  
 
   get "/dashboard", to: "pages#dashboard", as: "dashboard"
   get "/admin_dashboard", to: "pages#admin_dashboard", as: "admin_dashboard"

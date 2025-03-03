@@ -1,0 +1,32 @@
+<div class="bg-gray-50 min-h-screen">
+  <div class="max-w-6xl mx-auto px-4 py-12 sm:px-6 lg:px-8">
+    <div class="text-center">
+      <h1 class="text-4xl font-extrabold text-gray-900 sm:text-5xl sm:tracking-tight lg:text-6xl">Edit Profile</h1>
+      <p class="mt-5 max-w-xl mx-auto text-xl text-gray-500">Update your personal information.</p>
+    </div>
+
+    <div class="mt-12">
+      <div class="bg-white rounded-xl shadow-md overflow-hidden">
+        <div class="p-8">
+          <%= form_with model: current_user, url: profile_path, method: :patch, class: "space-y-6" do |form| %>
+            <div>
+              <%= form.label :name, "Name", class: "block text-sm font-medium text-gray-700" %>
+              <%= form.text_field :name, class: "mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" %>
+            </div>
+            <div>
+              <%= form.label :surname, "Surname", class: "block text-sm font-medium text-gray-700" %>
+              <%= form.text_field :surname, class: "mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" %>
+            </div>
+            <div>
+              <%= form.label :contact_address, "Contact Address", class: "block text-sm font-medium text-gray-700" %>
+              <%= form.text_field :contact_address, class: "mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" %>
+            </div>
+            <div class="mt-6">
+              <%= form.submit "Update Profile", class: "inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" %>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
