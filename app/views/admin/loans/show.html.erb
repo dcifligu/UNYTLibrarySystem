@@ -1,0 +1,113 @@
+<div class="pt-40 w-screen">
+  <div class="w-full max-w-3xl mx-auto">
+    <div class="flex justify-between items-center mb-6">
+      <h1 class="text-3xl font-bold">Loan Details</h1>
+      <%= link_to "Back to Loans", admin_loans_path, class: "px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" %>
+    </div>
+    
+    <div class="bg-white shadow overflow-hidden rounded-lg">
+      <div class="px-4 py-5 sm:px-6 bg-gray-50">
+        <h3 class="text-lg leading-6 font-medium text-gray-900">Loan Information</h3>
+      </div>
+      <div class="border-t border-gray-200">
+        <dl>
+          <div class="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+            <dt class="text-sm font-medium text-gray-500">Status</dt>
+            <dd class="mt-1 text-sm text-gray-900 sm:col-span-2">
+              <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
+                <%= @loan.status == 'active' ? 'bg-green-100 text-green-800' : 
+                   (@loan.status == 'returned' ? 'bg-gray-100 text-gray-800' : 'bg-red-100 text-red-800') %>">
+                <%= @loan.status.capitalize %>
+              </span>
+            </dd>
+          </div>
+          <div class="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+            <dt class="text-sm font-medium text-gray-500">User</dt>
+            <dd class="mt-1 text-sm text-gray-900 sm:col-span-2"><%= @loan.user.name %> <%= @loan.user.surname %></dd>
+          </div>
+          <div class="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+            <dt class="text-sm font-medium text-gray-500">Item</dt>
+            <dd class="mt-1 text-sm text-gray-900 sm:col-span-2"><%= @loan.loanable.title %> (<%= @loan.loanable_type %>)</dd>
+          </div>
+          <div class="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+            <dt class="text-sm font-medium text-gray-500">Start Date</dt>
+            <dd class="mt-1 text-sm text-gray-900 sm:col-span-2"><%= @loan.start_date.strftime("%B %d, %Y") %></dd>
+          </div>
+          <div class="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+            <dt class="text-sm font-medium text-gray-500">Due Date</dt>
+            <dd class="mt-1 text-sm text-gray-900 sm:col-span-2">
+              <%= @loan.end_date.strftime("%B %d, %Y") %>
+              <% if @loan.overdue? %>
+                <span class="ml-2 px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
+                  Overdue by <%= @loan.days_overdue %> days
+                </span>
+              <% end %>
+            </dd>
+          </div>
+
+          <% if @loan.overdue? || @loan.status == 'overdue' %>
+            <div class="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+              <dt class="text-sm font-medium text-gray-500">Fine Amount</dt>
+              <dd class="mt-1 text-sm text-gray-900 sm:col-span-2">
+                ALL<%= @fine_amount%>
+              </dd>
+            </div>
+          <% end %>
+        </dl>
+      </div>
+    </div>
+
+    <% if @loan.active? || @loan.status == 'overdue' %>
+      <div class="mt-6 bg-white shadow overflow-hidden rounded-lg">
+        <div class="px-4 py-5 sm:px-6 bg-gray-50">
+          <h3 class="text-lg leading-6 font-medium text-gray-900">Return Item</h3>
+        </div>
+        
+        <div class="p-6">
+          <%= form_with url: close_admin_loan_path(@loan), method: :patch, local: true do |form| %>
+            <% if @loan.overdue? && @fine_amount > 0 %>
+              <div class="mb-6">
+                <div class="flex items-start">
+                  <%= form.check_box :collect_fine, class: "h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded mt-1", id: "collect_fine" %>
+                  <label for="collect_fine" class="ml-2 block text-sm text-gray-700">
+                    Mark fine as collected (ALL<%= @fine_amount %>)
+                  </label>
+                </div>
+              </div>
+            <% end %>
+            
+            <div class="flex justify-end">
+              <%= form.submit "Mark as Returned", class: "px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500" %>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+
+    <% if @loan.status == 'returned' && @loan.fine.present? %>
+      <div class="mt-6 bg-white shadow overflow-hidden rounded-lg">
+        <div class="px-4 py-5 sm:px-6 bg-gray-50">
+          <h3 class="text-lg leading-6 font-medium text-gray-900">Fine Information</h3>
+        </div>
+        
+        <div class="border-t border-gray-200">
+          <dl>
+            <div class="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+              <dt class="text-sm font-medium text-gray-500">Amount</dt>
+              <dd class="mt-1 text-sm text-gray-900 sm:col-span-2">ALL<%= @loan.fine.amount %></dd>
+            </div>
+            <div class="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+              <dt class="text-sm font-medium text-gray-500">Status</dt>
+              <dd class="mt-1 text-sm text-gray-900 sm:col-span-2">
+                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
+                  <%= @loan.fine.status == 'paid' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800' %>">
+                  <%= @loan.fine.status.capitalize %>
+                </span>
+              </dd>
+            </div>
+          </dl>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>

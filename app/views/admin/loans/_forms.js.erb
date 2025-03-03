@@ -1,0 +1,38 @@
+document.addEventListener('DOMContentLoaded', function() {
+  const loanableTypeSelect = document.getElementById('loan_loanable_type');
+  const loanableIdSelect = document.getElementById('loan_loanable_id');
+  
+  if (loanableTypeSelect && loanableIdSelect) {
+    loanableTypeSelect.addEventListener('change', function() {
+      const type = this.value;
+      
+      if (type) {
+        loanableIdSelect.disabled = true;
+        loanableIdSelect.innerHTML = '<option>Loading...</option>';
+        
+        // Fetch the appropriate items based on type
+        fetch(`/admin/get_loanables?type=${type}`)
+          .then(response => response.json())
+          .then(data => {
+            loanableIdSelect.innerHTML = '<option value="">Select item</option>';
+            
+            data.forEach(item => {
+              const option = document.createElement('option');
+              option.value = item.id;
+              option.textContent = item.title;
+              loanableIdSelect.appendChild(option);
+            });
+            
+            loanableIdSelect.disabled = false;
+          })
+          .catch(error => {
+            console.error('Error loading items:', error);
+            loanableIdSelect.innerHTML = '<option value="">Error loading items</option>';
+          });
+      } else {
+        loanableIdSelect.innerHTML = '<option value="">First select item type</option>';
+        loanableIdSelect.disabled = true;
+      }
+    });
+  }
+});

@@ -1,0 +1,101 @@
+<div class="pt-40 w-screen">
+  <div class="w-full max-w-lg mx-auto">
+    <h1 class="text-3xl font-bold mb-6">Create New Loan</h1>
+    
+    <div class="bg-white shadow overflow-hidden rounded-lg p-6">
+      <%= form_with model: [:admin, @loan], local: true do |form| %>
+        <% if @loan.errors.any? %>
+          <div class="mb-4 p-4 bg-red-50 border border-red-200 rounded-md">
+            <h2 class="text-red-800 font-medium">
+              <%= pluralize(@loan.errors.count, "error") %> prohibited this loan from being saved:
+            </h2>
+            <ul class="list-disc pl-5 mt-2">
+              <% @loan.errors.full_messages.each do |message| %>
+                <li class="text-red-700"><%= message %></li>
+              <% end %>
+            </ul>
+          </div>
+        <% end %>
+        
+        <div class="mb-4">
+          <%= form.label :user_id, class: "block text-sm font-medium text-gray-700" %>
+          <%= form.collection_select :user_id, @users, :id, ->(user) { "#{user.name} #{user.surname}" }, 
+            { prompt: "Select a user" }, 
+            { class: "mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" } %>
+        </div>
+        
+        <% if @loanable %>
+          <div class="mb-4">
+            <div class="block text-sm font-medium text-gray-700 mb-1">Selected Item</div>
+            <div class="py-2 px-3 border border-gray-300 bg-gray-50 rounded-md">
+              <%= @loanable.title %> (<%= @loanable.class.name %>)
+              <%= form.hidden_field :loanable_id, value: @loanable.id %>
+              <%= form.hidden_field :loanable_type, value: @loanable.class.name %>
+            </div>
+          </div>
+        <% else %>
+          <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <div class="mb-4">
+              <%= form.label :loanable_type, "Item Type", class: "block text-sm font-medium text-gray-700" %>
+              <%= form.select :loanable_type, [["Book", "Book"], ["Journal", "Journal"]], 
+                { include_blank: "Select item type" },
+                { class: "mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500",
+                  data: { action: "change->loan#toggleLoanableSelect" } } %>
+            </div>
+            
+            <div class="mb-4">
+              <%= form.label :loanable_id, "Item", class: "block text-sm font-medium text-gray-700" %>
+              <%= form.collection_select :loanable_id, [], :id, :title,
+                { prompt: "First select item type" },
+                { class: "mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500",
+                  disabled: true } %>
+            </div>
+          </div>
+        <% end %>
+        
+        <div class="flex items-center justify-end mt-6">
+          <%= link_to "Cancel", admin_loans_path, class: "mr-4 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" %>
+          <%= form.submit "Create Loan", class: "px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>
+
+<script>
+  // For dynamic loading of loanables when loanable_type changes
+  document.addEventListener('DOMContentLoaded', function() {
+    const loanableTypeSelect = document.querySelector('#loan_loanable_type');
+    const loanableIdSelect = document.querySelector('#loan_loanable_id');
+    
+    if (loanableTypeSelect && loanableIdSelect) {
+      loanableTypeSelect.addEventListener('change', function() {
+        const type = this.value;
+        
+        if (type) {
+          loanableIdSelect.disabled = true;
+          loanableIdSelect.innerHTML = '<option>Loading...</option>';
+          
+          // Fetch items based on selected type
+          fetch(`/admin/loans/get_loanables?type=${type}`)
+            .then(response => response.json())
+            .then(items => {
+              loanableIdSelect.innerHTML = '<option value="">Select item</option>';
+              
+              items.forEach(item => {
+                const option = document.createElement('option');
+                option.value = item.id;
+                option.textContent = item.title;
+                loanableIdSelect.appendChild(option);
+              });
+              
+              loanableIdSelect.disabled = false;
+            });
+        } else {
+          loanableIdSelect.innerHTML = '<option value="">First select item type</option>';
+          loanableIdSelect.disabled = true;
+        }
+      });
+    }
+  });
+</script>

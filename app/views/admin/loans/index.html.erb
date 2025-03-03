@@ -1,0 +1,78 @@
+<div class="pt-40 w-screen">
+  <div class="w-full max-w-6xl mx-auto">
+    <h1 class="text-3xl font-bold mb-6">Manage Loans</h1>
+    
+    <div class="mb-6 flex space-x-4">
+      <%= link_to "All Loans", admin_loans_path, class: "px-4 py-2 rounded-lg #{params[:filter].nil? ? 'bg-indigo-600 text-white' : 'bg-gray-200 text-gray-700'}" %>
+      <%= link_to "Outstanding Loans", admin_loans_path(filter: "outstanding"), class: "px-4 py-2 rounded-lg #{params[:filter] == 'outstanding' ? 'bg-indigo-600 text-white' : 'bg-gray-200 text-gray-700'}" %>
+      <%= link_to "Overdue Loans", admin_loans_path(filter: "overdue"), class: "px-4 py-2 rounded-lg #{params[:filter] == 'overdue' ? 'bg-indigo-600 text-white' : 'bg-gray-200 text-gray-700'}" %>
+      <%= link_to "Past Loans", admin_loans_path(filter: "past"), class: "px-4 py-2 rounded-lg #{params[:filter] == 'past' ? 'bg-indigo-600 text-white' : 'bg-gray-200 text-gray-700'}" %>
+    </div>
+    
+    <div class="mb-6 text-right">
+      <%= link_to "New Loan", new_admin_loan_path, class: "inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" %>
+    </div>
+    
+    <% if @loans.empty? %>
+      <div class="bg-gray-100 p-6 rounded-lg text-center">
+        <p class="text-gray-700">
+          <% if params[:filter] %>
+            There are no <%= params[:filter] %> loans in the system.
+          <% else %>
+            There are no loans in the system.
+          <% end %>
+        </p>
+      </div>
+    <% else %>
+      <div class="bg-white shadow overflow-hidden rounded-lg">
+        <table class="min-w-full divide-y divide-gray-200">
+          <thead class="bg-gray-50">
+            <tr>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">User</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Item</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Start Date</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Due Date</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+            </tr>
+          </thead>
+          <tbody class="bg-white divide-y divide-gray-200">
+            <% @loans.each do |loan| %>
+              <tr class="<%= 'bg-red-50' if loan.overdue? %>">
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <%= loan.user.name %> <%= loan.user.surname %>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <%= loan.loanable.title %>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <%= loan.loanable_type %>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <%= loan.start_date.strftime("%b %d, %Y") %>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <%= loan.end_date.strftime("%b %d, %Y") %>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
+                    <%= loan.status == 'active' ? 'bg-green-100 text-green-800' : 
+                       (loan.status == 'returned' ? 'bg-gray-100 text-gray-800' : 'bg-red-100 text-red-800') %>">
+                    <%= loan.status.capitalize %>
+                  </span>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  <%= link_to "Details", admin_loan_path(loan), class: "text-indigo-600 hover:text-indigo-900 mr-4" %>
+                  <% if loan.active? || loan.overdue? %>
+                    <%= link_to "Return", admin_loan_path(loan), class: "text-green-600 hover:text-green-900" %>
+                  <% end %>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    <% end %>
+  </div>
+</div>

@@ -1,4 +1,3 @@
-# config/routes.rb (update)
 Rails.application.routes.draw do
   get "journals/show"
   get "journals/create"
@@ -52,6 +51,9 @@ Rails.application.routes.draw do
     resources :loans, only: [:index, :new, :create, :show] do
       member do
         patch :close
+      end
+      collection do
+        get :get_loanables  # Added route for dynamically loading loanable items
       end
     end
     
