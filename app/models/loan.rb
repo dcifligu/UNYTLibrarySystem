@@ -2,15 +2,14 @@
 class Loan < ApplicationRecord
   belongs_to :user
   belongs_to :loanable, polymorphic: true
-  has_one :fine, dependent: :nullify
+  has_one :fine, dependent: :destroy
 
-  enum :status, { active: 0, returned: 1, overdue: 2 }
+  enum :status, { active: 0, returned: 1, overdue: 2 }, default: :active
 
-  validates :start_date, :end_date, presence: true
 
   scope :outstanding, -> { where(status: [ :active, :overdue ]) }
+  scope :overdue, -> { where(status: :overdue) }
   scope :past, -> { where(status: :returned) }
-  scope :overdue, -> { where("end_date < ? AND status = ?", Date.today, statuses[:active]).or(where(status: :overdue)) }
 
   before_create :set_default_end_date
 

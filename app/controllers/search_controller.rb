@@ -1,10 +1,20 @@
-# app/controllers/search_controller.rb
 class SearchController < ApplicationController
   def index
     @query = params[:query]
+    
     if @query.present?
-      @books = Book.search(@query)
-      @journals = Journal.search(@query)
+      begin
+        @books = Book.search(@query)
+        puts "Found #{@books.count} books for query: #{@query}"
+        
+        @journals = Journal.search(@query)
+        puts "Found #{@journals.count} journals for query: #{@query}"
+      rescue => e
+        puts "Error in search: #{e.message}"
+        flash.now[:alert] = "An error occurred while searching."
+        @books = []
+        @journals = []
+      end
     else
       @books = []
       @journals = []
@@ -14,12 +24,20 @@ class SearchController < ApplicationController
   def users
     authorize_admin
     @query = params[:query]
+    
     if @query.present?
       @users = User.where("name LIKE ? OR surname LIKE ? OR email LIKE ?", 
-                          "%#{@query}%", "%#{@query}%", "%#{@query}%")
+                         "%#{@query}%", "%#{@query}%", "%#{@query}%")
+                  .order(:name) 
     else
-      @users = []
+      # Show all users if no query is provided
+      @users = User.all.order(:name)
     end
+    
+    # Add debugging info
+    puts "Query: #{@query.inspect}"
+    puts "Found #{@users.count} users"
+    puts "Users: #{@users.map(&:email).inspect}"
   end
   
   private

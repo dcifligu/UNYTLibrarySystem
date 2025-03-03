@@ -7,43 +7,75 @@
 
     <div class="mt-8">
       <%= form_with url: search_path, method: :get, class: "flex justify-center" do |form| %>
-        <%= form.text_field :query, placeholder: "Search resources...", class: "w-1/2 px-4 py-2 border border-gray-300 rounded-l-md focus:outline-none focus:ring-2 focus:ring-indigo-500" %>
+        <%= form.text_field :query, value: @query, placeholder: "Search resources...", class: "w-1/2 px-4 py-2 border border-gray-300 rounded-l-md focus:outline-none focus:ring-2 focus:ring-indigo-500" %>
         <%= form.submit "Search", class: "px-4 py-2 bg-indigo-600 text-white font-medium rounded-r-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" %>
       <% end %>
     </div>
 
+    <% if flash[:alert].present? %>
+      <div class="mt-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+        <span class="block sm:inline"><%= flash[:alert] %></span>
+      </div>
+    <% end %>
+
+    <% if @query.present? %>
+      <div class="mt-6 text-center">
+        <p class="text-gray-600">Showing results for "<%= @query %>"</p>
+      </div>
+    <% end %>
+
     <div class="mt-12">
       <h2 class="text-2xl font-bold text-gray-900">Books</h2>
-      <div class="mt-4 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-        <% @books.each do |book| %>
-          <div class="bg-white rounded-xl shadow-md overflow-hidden">
-            <div class="p-8">
-              <h3 class="text-xl font-bold text-gray-900"><%= book.title %></h3>
-              <p class="mt-2 text-gray-500"><%= book.author %></p>
-              <div class="mt-4">
-                <%= link_to "Details", details_book_path(book), class: "inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" %>
+      <% if @books.present? %>
+        <div class="mt-4 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+          <% @books.each do |book| %>
+            <div class="bg-white rounded-xl shadow-md overflow-hidden">
+              <div class="p-8">
+                <h3 class="text-xl font-bold text-gray-900"><%= book.title %></h3>
+                <p class="mt-2 text-gray-500"><%= book.author %></p>
+                <div class="mt-4">
+                  <%= link_to "Details", details_book_path(book), class: "inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" %>
+                </div>
               </div>
             </div>
-          </div>
-        <% end %>
-      </div>
+          <% end %>
+        </div>
+      <% else %>
+        <div class="mt-4 bg-gray-100 p-6 rounded-lg text-center">
+          <% if @query.present? %>
+            <p class="text-gray-700">No books found matching "<%= @query %>".</p>
+          <% else %>
+            <p class="text-gray-700">Enter a search term to find books.</p>
+          <% end %>
+        </div>
+      <% end %>
     </div>
 
     <div class="mt-12">
       <h2 class="text-2xl font-bold text-gray-900">Journals</h2>
-      <div class="mt-4 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-        <% @journals.each do |journal| %>
-          <div class="bg-white rounded-xl shadow-md overflow-hidden">
-            <div class="p-8">
-              <h3 class="text-xl font-bold text-gray-900"><%= journal.title %></h3>
-              <p class="mt-2 text-gray-500"><%= journal.publisher %></p>
-              <div class="mt-4">
-                <%= link_to "Details", details_journal_path(journal), class: "inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" %>
+      <% if @journals.present? %>
+        <div class="mt-4 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+          <% @journals.each do |journal| %>
+            <div class="bg-white rounded-xl shadow-md overflow-hidden">
+              <div class="p-8">
+                <h3 class="text-xl font-bold text-gray-900"><%= journal.title %></h3>
+                <p class="mt-2 text-gray-500"><%= journal.publisher %></p>
+                <div class="mt-4">
+                  <%= link_to "Details", details_journal_path(journal), class: "inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" %>
+                </div>
               </div>
             </div>
-          </div>
-        <% end %>
-      </div>
+          <% end %>
+        </div>
+      <% else %>
+        <div class="mt-4 bg-gray-100 p-6 rounded-lg text-center">
+          <% if @query.present? %>
+            <p class="text-gray-700">No journals found matching "<%= @query %>".</p>
+          <% else %>
+            <p class="text-gray-700">Enter a search term to find journals.</p>
+          <% end %>
+        </div>
+      <% end %>
     </div>
   </div>
 </div>

@@ -14,7 +14,7 @@ Rails.application.routes.draw do
   get '/profile/edit', to: 'profiles#edit', as: 'edit_profile'
   patch '/profile', to: 'profiles#update'
   
-  resources :books, only: [:index, :show, :create, :new] do
+  resources :books, only: [:index, :show, :create, :new, :destroy] do
     member do
       get :details
       get :reserve
@@ -22,7 +22,7 @@ Rails.application.routes.draw do
     resources :reservations, only: [:new, :create]
   end
 
-  resources :journals, only: [:index, :show, :create, :new] do
+  resources :journals, only: [:index, :show, :create, :new, :destroy] do
     member do
       get :details
       get :reserve

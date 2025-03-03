@@ -31,13 +31,41 @@ class BooksController < ApplicationController
 
   def reserve
     authenticate_user!
-    @reservation = @book.reservations.new
+    @book = Book.find(params[:id])
+    @reservable = @book
+    @reservation = current_user.reservations.new(reservable: @book)
+    
+    render "reservations/new"
   end
 
   def destroy
     @book = Book.find(params[:id])
-    @book.destroy
-    redirect_to books_path, notice: "Book was successfully deleted."
+
+    begin
+      ActiveRecord::Base.transaction do
+        # Handle loans and related fines
+        @book.loans.each do |loan|
+          # If there's a fine associated with this loan, handle it first
+          if loan.fine.present?
+            # Either destroy the fine
+            loan.fine.destroy!
+            # Or detach it from the loan (set loan_id to nil)
+            # loan.fine.update!(loan_id: nil)
+          end
+
+          # Now destroy the loan
+          loan.destroy!
+        end
+
+        # Then destroy the book
+        @book.destroy!
+      end
+
+      redirect_to books_path, notice: "Book was successfully deleted."
+    rescue => e
+      Rails.logger.error("Error deleting book: #{e.message}")
+      redirect_to books_path, alert: "Failed to delete book: #{e.message}"
+    end
   end
 
   private

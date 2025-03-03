@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_03_03_190610) do
+ActiveRecord::Schema[8.0].define(version: 2025_03_03_224355) do
   create_table "books", force: :cascade do |t|
     t.string "title"
     t.string "author"
@@ -23,7 +23,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_03_190610) do
   end
 
   create_table "fines", force: :cascade do |t|
-    t.integer "loan_id", null: false
+    t.integer "loan_id"
     t.integer "user_id", null: false
     t.decimal "amount", precision: 8, scale: 2, null: false
     t.integer "status", default: 0

@@ -1,6 +1,6 @@
 class JournalsController < ApplicationController
-  before_action :authorize_admin, only: [:create, :new, :destroy] 
-  before_action :set_journal, only: [:details, :reserve, :destroy]
+  before_action :authorize_admin, only: [ :create, :new, :destroy ]
+  before_action :set_journal, only: [ :details, :reserve, :destroy ]
 
   def new
     @journal = Journal.new
@@ -31,12 +31,38 @@ class JournalsController < ApplicationController
 
   def reserve
     authenticate_user!
-    @reservation = @journal.reservations.new
+    @journal = Journal.find(params[:id])
+    @reservable = @journal
+    @reservation = current_user.reservations.new(reservable: @journal)
+    
+    render "reservations/new"
   end
 
   def destroy
-    @journal.destroy
-    redirect_to journals_path, notice: "Journal was successfully deleted."
+    @journal = Journal.find(params[:id])
+
+    begin
+      ActiveRecord::Base.transaction do
+        # Handle loans and related fines
+        @journal.loans.each do |loan|
+          # If there's a fine associated with this loan, handle it first
+          if loan.fine.present?
+            loan.fine.destroy!
+          end
+
+          # Now destroy the loan
+          loan.destroy!
+        end
+
+        # Then destroy the journal
+        @journal.destroy!
+      end
+
+      redirect_to journals_path, notice: "Journal was successfully deleted."
+    rescue => e
+      Rails.logger.error("Error deleting journal: #{e.message}")
+      redirect_to journals_path, alert: "Failed to delete journal: #{e.message}"
+    end
   end
 
   private

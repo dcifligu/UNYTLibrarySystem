@@ -1,7 +1,6 @@
-# app/models/book.rb (update)
 class Book < ApplicationRecord
   has_many :reservations, as: :reservable, dependent: :destroy
-  has_many :loans, as: :loanable, dependent: :nullify
+  has_many :loans, as: :loanable, dependent: :destroy
   has_many :users, through: :reservations
 
   validates :title, :author, presence: true
@@ -23,8 +22,8 @@ class Book < ApplicationRecord
   end
 
   def current_status
-    active_loan = loans.where(status: [ :active, :overdue ]).first
-    active_reservation = reservations.where(status: [ :pending, :approved ]).first
+    active_loan = loans.where(status: [:active, :overdue]).first
+    active_reservation = reservations.where(status: [:pending, :approved]).first
 
     if active_loan
       active_loan.overdue? ? "On loan (overdue)" : "On loan"
@@ -36,6 +35,7 @@ class Book < ApplicationRecord
   end
 
   def self.search(query)
-    where("title LIKE ? OR author LIKE ? OR publisher LIKE ?", "%#{query}%", "%#{query}%", "%#{query}%")
+    where("title LIKE ? OR author LIKE ? OR description LIKE ?", 
+          "%#{query}%", "%#{query}%", "%#{query}%")
   end
 end

@@ -1,7 +1,7 @@
 # app/models/journal.rb (update)
 class Journal < ApplicationRecord
   has_many :reservations, as: :reservable, dependent: :destroy
-  has_many :loans, as: :loanable, dependent: :nullify
+  has_many :loans, as: :loanable, dependent: :destroy
   has_many :users, through: :reservations
 
   validates :title, :publisher, presence: true
@@ -36,6 +36,7 @@ class Journal < ApplicationRecord
   end
 
   def self.search(query)
-    where("title LIKE ? OR publisher LIKE ? OR issue LIKE ?", "%#{query}%", "%#{query}%", "%#{query}%")
+    where("title LIKE ? OR publisher LIKE ? OR description LIKE ?", 
+          "%#{query}%", "%#{query}%", "%#{query}%")
   end
 end

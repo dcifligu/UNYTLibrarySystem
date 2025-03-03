@@ -2,7 +2,7 @@ module Admin
   class LoansController < ApplicationController
     before_action :authenticate_user!
     before_action :authorize_admin
-    before_action :set_loan, only: [:show, :close]
+    before_action :set_loan, only: [ :show, :close ]
 
     def index
       @loans = Loan.includes(:user, :loanable)
@@ -60,11 +60,11 @@ module Admin
         redirect_to admin_loans_path, alert: "Failed to close loan."
       end
     end
-    
+
     # New method for dynamically loading loanable items
     def get_loanables
       type = params[:type]
-      
+
       items = case type
       when "Book"
         Book.all
@@ -73,7 +73,7 @@ module Admin
       else
         []
       end
-      
+
       render json: items.map { |item| { id: item.id, title: item.title } }
     end
 
@@ -89,7 +89,7 @@ module Admin
     end
 
     def authorize_admin
-      redirect_to root_path, alert: "Access denied!" unless current_user&.admin?
+      redirect_to dashboard_path, alert: "Access denied!" unless current_user&.admin?
     end
   end
 end
