@@ -7,7 +7,8 @@ class BooksController < ApplicationController
   end
 
   def create
-    @book = Book.new(book_params)
+    #Factory method
+    @book = ResourceFactory.create('book', book_params)
 
     if @book.save
       redirect_to admin_dashboard_path, notice: "Book was successfully created."
@@ -15,6 +16,7 @@ class BooksController < ApplicationController
       render :new
     end
   end
+
 
   def index
     @query = params[:query]

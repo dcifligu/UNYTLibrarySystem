@@ -7,7 +7,8 @@ class JournalsController < ApplicationController
   end
 
   def create
-    @journal = Journal.new(journal_params)
+    #Factory method
+    @journal = ResourceFactory.create('journal', book_params)
 
     if @journal.save
       redirect_to admin_dashboard_path, notice: "Journal was successfully created."
@@ -19,9 +20,9 @@ class JournalsController < ApplicationController
   def index
     @query = params[:query]
     if @query.present?
-      @journals = Journal.search(@query)
+      @journals = ResourceFactory.search('journal', @query)
     else
-      @journals = Journal.all
+      @journals = Book.all
     end
   end
 

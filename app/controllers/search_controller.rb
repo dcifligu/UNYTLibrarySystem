@@ -1,14 +1,14 @@
 class SearchController < ApplicationController
+  
   def index
+    #Factory method
     @query = params[:query]
     
     if @query.present?
       begin
-        @books = Book.search(@query)
-        puts "Found #{@books.count} books for query: #{@query}"
-        
-        @journals = Journal.search(@query)
-        puts "Found #{@journals.count} journals for query: #{@query}"
+        search_results = ResourceFactory.search('all', @query)
+        @books = search_results[:books]
+        @journals = search_results[:journals]
       rescue => e
         puts "Error in search: #{e.message}"
         flash.now[:alert] = "An error occurred while searching."
