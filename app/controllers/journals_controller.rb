@@ -1,7 +1,7 @@
 class JournalsController < ApplicationController
-  before_action :authorize_admin, only: [ :create, :new, :destroy ]
-  before_action :set_journal, only: [ :details, :reserve, :destroy ]
-
+    before_action :authorize_admin, only: [ :create, :new, :destroy ]
+    before_action :set_journal, only: [ :details, :reserve, :destroy ]
+    
   def new
     @journal = Journal.new
   end
@@ -27,7 +27,8 @@ class JournalsController < ApplicationController
   end
 
   def details
-    # Already set @journal in before_action
+    # Decorate the journal
+    @decorated_journal = @journal.decorate
   end
 
   def reserve

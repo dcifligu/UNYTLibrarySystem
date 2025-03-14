@@ -28,7 +28,8 @@ class BooksController < ApplicationController
   end
 
   def details
-    # Already set @book in before_action
+    # Decorate the book
+    @decorated_book = @book.decorate
   end
 
   def reserve
